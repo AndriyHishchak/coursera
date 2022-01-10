@@ -25,13 +25,18 @@ public class PointSET {
     }
 
     public void insert(Point2D p) {
+        checkNullToObject(p);
+        points.add(p);
     }
 
     public Boolean contains(Point2D p) {
-        return null;
+        checkNullToObject(p);
+        return points.contains(p);
     }
 
     public void draw() {
+        for (Point2D p : points)
+            p.draw();
     }
 
     public Iterable<Point2D> range(RectHV rect) {
