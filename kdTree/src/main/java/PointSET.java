@@ -1,11 +1,18 @@
 import edu.princeton.cs.algs4.Point2D;
 import edu.princeton.cs.algs4.RectHV;
+import edu.princeton.cs.algs4.SET;
 
 
 public class PointSET {
 
+    private final SET<Point2D> points;
+
+    public PointSET() {
+        points = new SET<>();
+    }
+
     public Boolean isEmpty() {
-        return null;
+        return points.isEmpty();
     }
 
     public Integer size() {
