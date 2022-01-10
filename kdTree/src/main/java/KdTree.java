@@ -37,7 +37,8 @@ public class KdTree {
         checkNullToObject(p);
         if (isEmpty()) {
             root = new TreeNode(p, null, null,
-                    new RectHV(null,null,null,null), true);
+                    new RectHV(Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY,
+                            Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY), true);
             size = 1;
             return;
         }
@@ -56,17 +57,17 @@ public class KdTree {
         if (pre.isSeparatedByX) {
             if (p.x() <= pre.point.x())
                 pre.left = new TreeNode(p, null, null,
-                        new RectHV(null, null, null, null), false);
+                        new RectHV(pre.rect.xmin(), pre.rect.ymin(), pre.point.x(), pre.rect.ymax()), false);
             else
                 pre.right = new TreeNode(p, null, null,
-                        new RectHV(null, null, null, null), false);
+                        new RectHV(pre.point.x(), pre.rect.ymin(), pre.rect.xmax(), pre.rect.ymax()), false);
         } else {
             if (p.y() <= pre.point.y())
                 pre.left = new TreeNode(p, null, null,
-                        new RectHV(null, null, null, null), false);
+                        new RectHV(pre.rect.xmin(), pre.rect.ymin(), pre.rect.xmax(), pre.point.y()), true);
             else
                 pre.right = new TreeNode(p, null, null,
-                        new RectHV(null, null, null, null), false);
+                        new RectHV(pre.rect.xmin(), pre.point.y(), pre.rect.xmax(), pre.rect.ymax()), true);
         }
         ++size;
     }
