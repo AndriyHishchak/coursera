@@ -72,8 +72,21 @@ public class KdTree {
         ++size;
     }
 
-    public boolean contains(Point2D p) { // does the set contain point p?
-        return false;
+    private boolean contains(TreeNode currNode, Point2D p) {
+        if (currNode == null)
+            return false;
+        if (p.equals(currNode.point))
+            return true;
+        if ((currNode.isSeparatedByX && p.x() <= currNode.point.x()) ||
+                (!currNode.isSeparatedByX && p.y() <= currNode.point.y()))
+            return contains(currNode.left, p);
+        else
+            return contains(currNode.right, p);
+    }
+
+    public boolean contains(Point2D p) {
+        checkNullToObject(p);
+        return contains(root, p);
     }
 
     public void draw() {
@@ -83,8 +96,25 @@ public class KdTree {
         return null;
     }
 
-    public Point2D nearest(Point2D p) {
-        return null;
+    private TreeNode nearest(TreeNode currNode, TreeNode nearestNode, Point2D p) {
+        if (currNode == null)
+            return nearestNode;
+
+        if (p.compareTo(currNode.point) == 0)
+            return currNode;
+
+        if (p.distanceSquaredTo(currNode.point) < p.distanceSquaredTo(nearestNode.point))
+            nearestNode = currNode;
+
+        return nearestNode;
+    }
+
+
+    public Point2D nearest(Point2D p) { // a nearest neighbor in the set to point p; null if the set is empty
+        checkNullToObject(p);
+        if (isEmpty())
+            return null;
+        return nearest(root, root, p).point;
     }
 
     private void checkNullToObject(Object object) {
