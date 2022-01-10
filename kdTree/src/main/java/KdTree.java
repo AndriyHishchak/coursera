@@ -1,5 +1,6 @@
 import edu.princeton.cs.algs4.Point2D;
 import edu.princeton.cs.algs4.RectHV;
+import edu.princeton.cs.algs4.StdDraw;
 
 public class KdTree {
     private TreeNode root;
@@ -132,5 +133,16 @@ public class KdTree {
     private void checkNullToObject(Object object) {
         if (object == null)
             throw new IllegalArgumentException();
+    }
+
+    public static void main(String[] args) {
+        KdTree tree = new KdTree();
+        tree.insert(new Point2D(0.7, 0.2));
+        tree.insert(new Point2D(0.5, 0.4));
+        tree.insert(new Point2D(0.2, 0.3));
+        tree.insert(new Point2D(0.4, 0.7));
+        tree.insert(new Point2D(0.9, 0.6));
+
+        System.out.println("nearest - " + tree.nearest(new Point2D(0.12, 0.74)));
     }
 }
