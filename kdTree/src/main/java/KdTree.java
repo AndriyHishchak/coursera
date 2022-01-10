@@ -1,29 +1,25 @@
 import edu.princeton.cs.algs4.Point2D;
 import edu.princeton.cs.algs4.RectHV;
-import edu.princeton.cs.algs4.StdDraw;
+
 
 public class KdTree {
     private TreeNode root;
     private int size;
 
-    private static class TreeNode {
-        private final Point2D point;
-        private TreeNode left, right;
-        private final RectHV rect;
-        private final boolean isSeparatedByX;
-
-        TreeNode(Point2D p, TreeNode left, TreeNode right, RectHV rect, boolean isSeparatedByX) {
-            this.point = p;
-            this.left = left;
-            this.right = right;
-            this.rect = rect;
-            this.isSeparatedByX = isSeparatedByX;
-        }
-    }
-
     public KdTree() {
         root = null;
         size = 0;
+    }
+
+    public static void main(String[] args) {
+        KdTree tree = new KdTree();
+        tree.insert(new Point2D(0.7, 0.2));
+        tree.insert(new Point2D(0.5, 0.4));
+        tree.insert(new Point2D(0.2, 0.3));
+        tree.insert(new Point2D(0.4, 0.7));
+        tree.insert(new Point2D(0.9, 0.6));
+
+        System.out.println("nearest - " + tree.nearest(new Point2D(0.12, 0.74)));
     }
 
     public boolean isEmpty() {
@@ -135,14 +131,18 @@ public class KdTree {
             throw new IllegalArgumentException();
     }
 
-    public static void main(String[] args) {
-        KdTree tree = new KdTree();
-        tree.insert(new Point2D(0.7, 0.2));
-        tree.insert(new Point2D(0.5, 0.4));
-        tree.insert(new Point2D(0.2, 0.3));
-        tree.insert(new Point2D(0.4, 0.7));
-        tree.insert(new Point2D(0.9, 0.6));
+    private static class TreeNode {
+        private final Point2D point;
+        private final RectHV rect;
+        private final boolean isSeparatedByX;
+        private TreeNode left, right;
 
-        System.out.println("nearest - " + tree.nearest(new Point2D(0.12, 0.74)));
+        TreeNode(Point2D p, TreeNode left, TreeNode right, RectHV rect, boolean isSeparatedByX) {
+            this.point = p;
+            this.left = left;
+            this.right = right;
+            this.rect = rect;
+            this.isSeparatedByX = isSeparatedByX;
+        }
     }
 }
