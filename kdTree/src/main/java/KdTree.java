@@ -106,6 +106,18 @@ public class KdTree {
         if (p.distanceSquaredTo(currNode.point) < p.distanceSquaredTo(nearestNode.point))
             nearestNode = currNode;
 
+        if ((currNode.isSeparatedByX && p.x() <= currNode.point.x()) ||
+                (!currNode.isSeparatedByX && p.y() <= currNode.point.y())) {
+            nearestNode = nearest(currNode.left, nearestNode, p);
+            if (currNode.right != null &&
+                    currNode.right.rect.distanceSquaredTo(p) < p.distanceSquaredTo(nearestNode.point))
+                nearestNode = nearest(currNode.right, nearestNode, p);
+        } else {
+            nearestNode = nearest(currNode.right, nearestNode, p);
+            if (currNode.left != null &&
+                    currNode.left.rect.distanceSquaredTo(p) < p.distanceSquaredTo(nearestNode.point))
+                nearestNode = nearest(currNode.left, nearestNode, p);
+        }
         return nearestNode;
     }
 
