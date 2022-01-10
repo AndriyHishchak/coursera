@@ -16,7 +16,7 @@ public class PointSET {
     }
 
     public Integer size() {
-        return null;
+        return points.size();
     }
 
     public void insert(Point2D p) {
