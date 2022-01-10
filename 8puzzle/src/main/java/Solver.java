@@ -1,25 +1,17 @@
-import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.MinPQ;
 import edu.princeton.cs.algs4.Queue;
 import edu.princeton.cs.algs4.Stack;
-import edu.princeton.cs.algs4.StdOut;
 
 public class Solver {
 
     private SearchNode lastNode;
-    private boolean solvable;
-    private int minMoves = 0;
+    private final boolean solvable;
+    private final int minMoves;
 
-    // solve a slider puzzle
     public static void main(String[] args) {
 
-        // TODO Auto-generated method stub
         Iterable<Board> solution;
-
         int [] numbers = { 0, 1, 3, 4, 2, 5, 7, 8, 6 };
-        int [] goal = {1, 2, 3, 4, 5, 6, 7, 8, 0};
-        int [] unsolvable = { 1, 2, 3, 4, 5, 6, 8, 7, 0 };
-        int [] test = { 1, 2, 3, 4, 6, 5, 7, 8, 0 };
         int[][] blocks = new int[3][3];
         int[][] block2 = new int [2][2];
         int idx = 0;
@@ -38,8 +30,6 @@ public class Solver {
         }
 
         Board board = new Board(blocks);
-        //System.out.println(board);
-        //System.out.println("TWIN: " + board.twin());
 
         Solver solver = new Solver(board);
         System.out.println("Is solvable? " + solver.isSolvable());
@@ -48,40 +38,18 @@ public class Solver {
         for (Board b : solution)
             System.out.println(b);
 
-        // create initial board from file
-        /*In in = new In(args[0]);
-        int n = in.readInt();
-        int[][] blocks = new int[n][n];
-        for (int i = 0; i < n; i++)
-            for (int j = 0; j < n; j++)
-                blocks[i][j] = in.readInt();
-        Board initial = new Board(blocks);
-
-        // solve the puzzle
-        Solver solver = new Solver(initial);
-
-        // print solution to standard output
-        if (!solver.isSolvable())
-            StdOut.println("No solution possible");
-        else {
-            StdOut.println("Minimum number of moves = " + solver.moves());
-            for (Board board : solver.solution())
-                StdOut.println(board);
-        }*/
     }
-    // find a solution to the initial board (using the A* algorithm)
     public Solver(Board initial) {
         if (initial == null)
             throw new java.lang.IllegalArgumentException();
-        //minMoves = initial.manhattan();
         int moves = 0;
         int twinMoves = 0;
 
-        Queue<Board> neighbors = new Queue<Board>();
-        Queue<Board> twinNeighbors = new Queue<Board>();
+        Queue<Board> neighbors = new Queue<>();
+        Queue<Board> twinNeighbors = new Queue<>();
 
-        MinPQ<SearchNode> searchNodes = new MinPQ<SearchNode>();
-        MinPQ<SearchNode> twinNodes = new MinPQ<SearchNode>();
+        MinPQ<SearchNode> searchNodes = new MinPQ<>();
+        MinPQ<SearchNode> twinNodes = new MinPQ<>();
 
         SearchNode searchNode = new SearchNode(initial, moves, null);
         SearchNode twinSearchNode = new SearchNode(initial.twin(), twinMoves, null);
@@ -134,7 +102,6 @@ public class Solver {
             }
 
             moves = current.getMoves() + 1;
-            twinMoves = twinCurrent.getMoves() + 1;
             lastNode = current;
         }
 
@@ -142,13 +109,11 @@ public class Solver {
         minMoves = moves - 1;
     }
 
-    // is the initial board solvable?
     public boolean isSolvable() {
         return solvable;
 
     }
 
-    // min number of moves to solve initial board; -1 if unsolvable
     public int moves() {
         if (!isSolvable())
             return -1;
@@ -156,9 +121,8 @@ public class Solver {
 
     }
 
-    // sequence of boards in a shortest solution; null if unsolvable
     public Iterable<Board> solution() {
-        Stack<Board> boards = new Stack<Board>();
+        Stack<Board> boards = new Stack<>();
         SearchNode lastNode = this.lastNode;
         if (this.isSolvable()) {
             while (lastNode.getPredecessor() != null) {
@@ -171,12 +135,12 @@ public class Solver {
         return null;
     }
 
-    private class SearchNode implements Comparable<SearchNode> {
+    private static class SearchNode implements Comparable<SearchNode> {
 
-        private SearchNode predecessor = null;
-        private Board current = null;
-        private int moves = 0;
-        private int priority = 0;
+        private final SearchNode predecessor;
+        private final Board current;
+        private final int moves;
+        private final int priority;
 
         public SearchNode(Board initial, int m, SearchNode pred) {
             predecessor = pred;
@@ -186,13 +150,8 @@ public class Solver {
             priority = m + initial.manhattan();
         }
 
-        public int getPriority() {
-            return priority;
-        }
-
         public Board getBoard() {
-            Board temp = current;
-            return temp;
+            return current;
         }
 
         public int getMoves() {
@@ -200,8 +159,7 @@ public class Solver {
         }
 
         public SearchNode getPredecessor() {
-            SearchNode temp = predecessor;
-            return temp;
+            return predecessor;
         }
 
         @Override
