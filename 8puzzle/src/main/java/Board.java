@@ -4,23 +4,36 @@ import edu.princeton.cs.algs4.Queue;
 
 public class Board {
 
-    private int[] board;
-    private int value = 1;
-    private int width;
+    private final int[] board;
+    private final int value = 1;
+    private final int width;
+
+    /**
+     * construct a board from an n-by-n array of blocks
+     */
+    public Board(int[][] blocks) {
+
+        if (blocks.length != blocks[0].length)
+            throw new java.lang.IllegalArgumentException();
+
+        width = blocks.length;
+        board = new int[width * width];
+
+        for (int i = 0; i < blocks.length; i++) {
+            for (int j = 0; j < blocks[0].length; j++) {
+                board[xyTo1D(i, j)] = blocks[i][j];
+            }
+        }
+    }
 
     public static void main(String[] args) {
 
         int[][] test;
-        int[][] goalBoard;
-        int [] numbers = { 8, 1, 3, 4, 0, 2, 7, 6, 5};
-        int [] goal = {1, 2, 3, 4, 5, 6, 7, 8, 0};
-        int idx = 0;
+        int[] numbers = {8, 1, 3, 4, 0, 2, 7, 6, 5};
 
         test = boardFromArray(numbers, 3);
-        goalBoard = boardFromArray(goal, 3);
 
         Board board = new Board(test);
-        Board goalB = new Board(goalBoard);
         System.out.println(board);
 
         System.out.println("Is it goal board? " + board.isGoal());
@@ -47,22 +60,17 @@ public class Board {
         System.out.println("Is board equal to boardClone? " + board.equals(boardClone));
     }
 
-    /**
-     * construct a board from an n-by-n array of blocks
-     */
-    public Board(int[][] blocks) {
+    private static int[][] boardFromArray(int[] arr, int width) {
+        int[][] test = new int[width][width];
+        int idx = 0;
 
-        if (blocks.length != blocks[0].length)
-            throw new java.lang.IllegalArgumentException();
-
-        width = blocks.length;
-        board = new int[width*width];
-
-        for (int i = 0; i < blocks.length; i++) {
-            for (int j = 0; j < blocks[0].length; j++) {
-                board[xyTo1D(i,j)] = blocks[i][j];
+        for (int i = 0; i < test.length; i++) {
+            for (int j = 0; j < test.length; j++) {
+                test[i][j] = arr[idx++];
             }
         }
+
+        return test;
     }
 
     /**
@@ -70,24 +78,17 @@ public class Board {
      */
     public int manhattan() {
         int sum = 0;
-        int x1 = 0;
-        int x2 = 0;
-        int y1 = 0;
-        int y2 = 0;
+        int x1, x2, y1, y2;
         for (int i = 0; i < board.length; i++) {
             if (board[i] != i + value && board[i] != 0) {
                 x1 = xyFrom1D(i)[0];
                 y1 = xyFrom1D(i)[1];
-                //System.out.println("Board Content: " + board[i]);
                 x2 = xyFrom1D(board[i] - value)[0];
                 y2 = xyFrom1D(board[i] - value)[1];
-               // System.out.println("x1: " + x1 + " y1: " + y1 + " x2: " + x2 + " y2 " + y2);
-               // System.out.println("Distance: " + (Math.abs(x1-x2) + Math.abs(y1-y2)));
-                sum = sum + ( Math.abs(x1-x2) + Math.abs(y1-y2) );
+                sum = sum + (Math.abs(x1 - x2) + Math.abs(y1 - y2));
             }
         }
         return sum;
-
     }
 
     /**
@@ -96,11 +97,12 @@ public class Board {
 
     public boolean isGoal() {
         for (int i = 0; i < board.length - value; i++)
-            if (board[i] != i+1)
+            if (board[i] != i + 1)
                 return false;
         return true;
 
     }
+
     /**
      * board dimension n
      */
@@ -122,22 +124,19 @@ public class Board {
         return sum;
 
     }
-    // a board that is obtained by exchanging any pair of blocks
-    public Board twin() {
-        int row = 0;
-        int col = 0;
-        int up = 0, right = 0, down = 0, left = 0;
 
-        int[][] twin2d = new int[width][width];
+    public Board twin() {
+        int row;
+        int col;
+        int up, right, down, left;
+
+        int[][] twin2d;
         int[] twin1d = new int[board.length];
 
-        // copy board to twin1d
         for (int i = 0; i < board.length; i++) {
             twin1d[i] = board[i];
         }
 
-        // check for non zero block in twin1d
-        // exchange non zero block with another non zero block
         for (int i = 0; i < twin1d.length; i++) {
             if (twin1d[i] != 0) {
                 col = xyFrom1D(i)[0];
@@ -177,13 +176,11 @@ public class Board {
             }
         }
 
-        // copy 1d twin to 2d twin
         twin2d = copy1DTo2D(twin1d, this.width);
         return new Board(twin2d);
 
     }
 
-    // does this board equal y?
     public boolean equals(Object object) {
         if (object == this) return true;
         if (object == null) return false;
@@ -191,7 +188,7 @@ public class Board {
         Board that = (Board) object;
         if (that.dimension() != this.dimension())
             return false;
-        for (int i = 0; i < board.length; i ++) {
+        for (int i = 0; i < board.length; i++) {
             if (this.board[i] != that.board[i])
                 return false;
         }
@@ -199,18 +196,13 @@ public class Board {
 
     }
 
-    // all neighboring boards
     public Iterable<Board> neighbors() {
-        Queue<Board> neighbors = new Queue<Board>();
+        Queue<Board> neighbors = new Queue<>();
         int emptyIndex;
-        int row = 0;
-        int col = 0;
-        int up = 0, right = 0, down = 0, left = 0;
-        ArrayList<Integer> blocks = new ArrayList<Integer>();
-
-        // look for empty block position
-        // get empty position and every position it can exchange with
-        // add all positions into blocks list
+        int row;
+        int col;
+        int up, right, down, left;
+        ArrayList<Integer> blocks = new ArrayList<>();
         for (emptyIndex = 0; emptyIndex < board.length; emptyIndex++) {
             if (board[emptyIndex] == 0) {
 
@@ -240,11 +232,7 @@ public class Board {
                 break;
             }
         }
-        // create temp copy of board
-        // exchange blocks and turn array into 2d
-        // create Board and enqueue it
         for (int i = 0; i < blocks.size(); i++) {
-            //System.out.println("BLOCKS " + blocks.get(i));
             int[] temp1d;
             int[][] temp2d;
             temp1d = copy1DTo1D(board);
@@ -253,27 +241,22 @@ public class Board {
             Board tempBoard = new Board(temp2d);
             neighbors.enqueue(tempBoard);
         }
-
         return neighbors;
-
     }
 
-    // helper method for 2d to 1d array
     private int xyTo1D(int row, int col) {
         return ((col) % width) + (width * (row));
     }
 
-    // helper method for 1d to 2d array
     private int[] xyFrom1D(int i) {
-        int [] xy = new int[2];
-        xy[0] = i % width; // col
-        xy[1] = i / width; // row
+        int[] xy = new int[2];
+        xy[0] = i % width;
+        xy[1] = i / width;
         return xy;
     }
 
-    // exchange index values in an array
     private void exch1D(int[] arr, int i, int j) {
-        int temp = 0;
+        int temp;
         temp = arr[i];
         arr[i] = arr[j];
         arr[j] = temp;
@@ -301,31 +284,15 @@ public class Board {
     }
 
     private boolean checkBoundary(int row, int col) {
-        if(row < 0 || row >= width|| col < 0 || col >= width)
-            return false;
-        return true;
+        return row >= 0 && row < width && col >= 0 && col < width;
     }
 
-    private static int[][] boardFromArray(int[] arr, int width) {
-        int[][] test = new int[width][width];
-        int idx = 0;
-
-        for (int i = 0; i < test.length; i++) {
-            for (int j = 0; j < test.length; j++) {
-                test[i][j] = arr[idx++];
-            }
-        }
-
-        return test;
-    }
-
-    // string representation of this board (in the output format specified below)
     public String toString() {
         StringBuilder s = new StringBuilder();
-        s.append(width + "\n");
+        s.append(width).append("\n");
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < width; j++) {
-                s.append(String.format("%2d ", board[xyTo1D(i,j)]));
+                s.append(String.format("%2d ", board[xyTo1D(i, j)]));
             }
             s.append("\n");
         }
