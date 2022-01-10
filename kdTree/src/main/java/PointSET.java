@@ -11,6 +11,11 @@ public class PointSET {
         points = new SET<>();
     }
 
+    private void checkNullToObject(Object object) {
+        if (object == null)
+            throw new IllegalArgumentException();
+    }
+
     public Boolean isEmpty() {
         return points.isEmpty();
     }
