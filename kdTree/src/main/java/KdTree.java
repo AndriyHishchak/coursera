@@ -1,7 +1,6 @@
 import edu.princeton.cs.algs4.Point2D;
 import edu.princeton.cs.algs4.RectHV;
 
-
 public class KdTree {
     private TreeNode root;
     private int size;
@@ -118,8 +117,7 @@ public class KdTree {
         return nearestNode;
     }
 
-
-    public Point2D nearest(Point2D p) { // a nearest neighbor in the set to point p; null if the set is empty
+    public Point2D nearest(Point2D p) {
         checkNullToObject(p);
         if (isEmpty())
             return null;
